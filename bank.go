@@ -56,3 +56,22 @@ func (a *Accounts) withdraw(userID int, amount int) bool {
 	return true
 }
 
+
+func (a *Accounts) transfer(user1, user2, amount int) bool {
+	if user1 == user2 {
+		return true
+	}
+	a.mutex.Lock()
+	defer a.mutex.Unlock()
+	initialBalance, exists1 := a.user_accounts[user1]
+	_, exists2 := a.user_accounts[user2]
+	if exists1 && exists2 && initialBalance >= amount {
+		a.user_accounts[user1] -= amount
+		a.user_accounts[user2] += amount
+	} else {
+		return false
+	}
+
+	return true
+}
+

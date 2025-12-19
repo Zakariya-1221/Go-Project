@@ -67,3 +67,65 @@ func TestWithdraw(t *testing.T) {
 
 	})
 }
+
+func TestTransfer(t *testing.T) {
+	bank := NewBank()
+	user1 := 10
+	user2 := 20
+
+	// Setup: Open accounts for both users
+	bank.open_account(user1)
+	bank.open_account(user2)
+	bank.deposit(user1, 500) // User 1 starts with $500
+	bank.deposit(user2, 100) // User 2 starts with $100
+
+	t.Run("Successful transfer between two accounts", func(t *testing.T) {
+		transferAmount := 200
+		
+		// Capture balances before the move
+		u1Initial := bank.user_accounts[user1]
+		u2Initial := bank.user_accounts[user2]
+
+		got := bank.transfer(user1, user2, transferAmount)
+
+		if got != true {
+			t.Fatalf("Transfer failed: expected true, got %t", got)
+		}
+
+		// Verify User 1 was debited
+		if bank.user_accounts[user1] != u1Initial-transferAmount {
+			t.Errorf("Sender balance incorrect: got %d, want %d", bank.user_accounts[user1], u1Initial-transferAmount)
+		}
+
+		// Verify User 2 was credited
+		if bank.user_accounts[user2] != u2Initial+transferAmount {
+			t.Errorf("Receiver balance incorrect: got %d, want %d", bank.user_accounts[user2], u2Initial+transferAmount)
+		}
+	})
+
+	t.Run("Transfer fails due to insufficient funds", func(t *testing.T) {
+		// User 1 currently has $300 (from previous subtest)
+		u1Before := bank.user_accounts[user1]
+		u2Before := bank.user_accounts[user2]
+
+		got := bank.transfer(user1, user2, 1000) // Try to send $1000
+
+		if got != false {
+			t.Errorf("Expected false for insufficient funds, but got %t", got)
+		}
+
+		// Verify NO balances changed
+		if bank.user_accounts[user1] != u1Before || bank.user_accounts[user2] != u2Before {
+			t.Errorf("Balances changed during failed transfer! U1: %d, U2: %d", bank.user_accounts[user1], bank.user_accounts[user2])
+		}
+	})
+
+	t.Run("Transfer fails if recipient does not exist", func(t *testing.T) {
+		nonExistentUser := 999
+		got := bank.transfer(user1, nonExistentUser, 50)
+
+		if got != false {
+			t.Errorf("Expected false when transferring to non-existent user, but got %t", got)
+		}
+	})
+}
