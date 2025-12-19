@@ -1,7 +1,9 @@
 **Go Bank Implementation**
+
 A lightweight, thread-safe bank account management system implemented in Go. This project demonstrates the use of Mutexes for concurrency control, struct-based encapsulation, and comprehensive unit testing.
 
 **Features**
+
 Thread-Safe Operations: Uses sync.RWMutex to prevent race conditions during concurrent deposits, withdrawals, and transfers.
 
 Atomic Transfers: Ensures money is never "lost" during a transfer by wrapping the entire transaction in a single lock cycle.
@@ -10,7 +12,8 @@ Encapsulated State: Protects account balances within a struct to prevent unautho
 
 Detailed Testing: Includes subtests for edge cases like insufficient funds and non-existent accounts.
 
-🛠 Project Structure
+**Project Structure**
+
 Accounts: The core struct holding the user_accounts map and the synchronization Mutex.
 
 NewBank(): Factory function to initialize the bank with an allocated map.
@@ -26,6 +29,7 @@ withdraw(userID, amount): Safely removes funds, preventing overdrafts.
 transfer(senderID, receiverID, amount): An atomic operation to move funds between users.
 
 **Usage**
+
 Go
 
 func main() {
@@ -45,9 +49,11 @@ func main() {
     }
 }
 **Testing**
+
 The project uses Go's standard testing package with a focus on isolation and subtests.
 
-Running Tests
+**Running Tests**
+
 To run the standard test suite:
 
 Bash
