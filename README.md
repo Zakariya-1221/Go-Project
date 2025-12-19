@@ -1,4 +1,4 @@
-***Go Bank Implementation***
+**Go Bank Implementation**
 A lightweight, thread-safe bank account management system implemented in Go. This project demonstrates the use of Mutexes for concurrency control, struct-based encapsulation, and comprehensive unit testing.
 
 **Features**
