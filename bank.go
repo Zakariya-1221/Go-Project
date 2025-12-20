@@ -5,6 +5,7 @@ import "sync"
 type Bank interface {
 	deposit(amount int) bool
 	withdraw(amount int) bool
+	transfer(user1, user2, amount int) bool
 }
 
 // struct is better than a global var for thread safety and concurrecy
